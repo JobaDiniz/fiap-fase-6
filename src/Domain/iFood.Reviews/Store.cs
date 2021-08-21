@@ -6,14 +6,17 @@ namespace iFood.Reviews
 {
     public class Store
     {
-        private readonly IList<Review> reviews = new List<Review>();
+        private /*readonly*/ IList<Review> reviews = new List<Review>();
 
-        public Store()
+        public Store() { }
+
+        public Store(string name, IEnumerable<Review> reviews)
         {
-            Id = Guid.NewGuid();
+            this.reviews = reviews.ToList();
+            Name = name;
         }
 
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
         public string Name { get; init; }
         public double AverageRating { get; private set; }
         public IEnumerable<Review> Reviews => reviews;
@@ -29,16 +32,20 @@ namespace iFood.Reviews
 
     public class Review
     {
-        public Review(string userName, double rating, DateTime date, string description = null)
+        public Review(Guid id, string userName, Rating rating, DateTime date, string description, string response)
         {
             if (string.IsNullOrEmpty(userName)) throw new ArgumentNullException(nameof(userName));
 
-            Id = Guid.NewGuid();
+            Id = id;
             UserName = userName;
             Rating = rating;
             Date = date;
             Description = description;
+            Response = response;
         }
+
+        public Review(string userName, Rating rating, DateTime date, string description = null)
+            : this(Guid.NewGuid(), userName, rating, date, description, null) { }
 
         public Guid Id { get; }
         public string UserName { get; }

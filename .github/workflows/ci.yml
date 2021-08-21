@@ -21,6 +21,19 @@ jobs:
   build:
     needs: [check-commit-message]
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:5.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -31,5 +44,8 @@ jobs:
       run: dotnet restore ./src
     - name: Build
       run: dotnet build ./src --no-restore
+    #- name: Create mongoDB Docker container for API testing
+     # run: sudo docker run -d -p 27017:27017 mongo:5.0
     - name: Test
       run: dotnet test ./src --no-build --verbosity normal
+    

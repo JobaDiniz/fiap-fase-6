@@ -1,15 +1,14 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
+using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using iFood.Reviews;
-using iFood.Reviews.Data;
-using System;
 
 namespace iFood
 {
-    public class MockableAutoDataAttribute : AutoDataAttribute
+    public class ReviewsAutoDataAttribute : AutoDataAttribute
     {
-        public MockableAutoDataAttribute()
+        public ReviewsAutoDataAttribute()
             : base(CreateFixture) { }
 
         private static IFixture CreateFixture()
@@ -18,7 +17,8 @@ namespace iFood
                  .Customize(new AutoMoqCustomization())
                  .Customize(new RatingCustomization());
 
-            fixture.Customize<ReviewDb>(x => x.With(p => p.Rating, () => new Random().Next((int)Rating.Minimum, (int)Rating.Maximum)));
+            fixture.Customize<Store>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+            fixture.Customize<Review>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
             return fixture;
         }
     }
