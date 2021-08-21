@@ -6,14 +6,14 @@ namespace iFood.Reviews
 {
     public class Store
     {
-        private readonly IList<Review> reviews;
+        private readonly IList<Review> reviews = new List<Review>();
 
         public Store()
         {
             Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; }
+        public Guid Id { get; private set; }
         public string Name { get; init; }
         public double AverageRating { get; private set; }
         public IEnumerable<Review> Reviews => reviews;
