@@ -25,6 +25,14 @@ namespace iFood.Reviews.Data
 
     public class StoreSettings
     {
+        public StoreSettings() { }
+
+        public StoreSettings(string connectionString, string database)
+        {
+            ConnectionString = connectionString;
+            Database = database;
+        }
+
         public string ConnectionString { get; set; }
         public string Database { get; set; }
     }
