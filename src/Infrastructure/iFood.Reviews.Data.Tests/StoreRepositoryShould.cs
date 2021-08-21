@@ -1,8 +1,6 @@
-using AutoFixture.Xunit2;
-using AutoMapper;
 using MongoDB.Driver;
-using Moq;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,31 +9,50 @@ namespace iFood.Reviews.Data.Tests
 {
     public class StoreRepositoryShould : IClassFixture<IntegrationFixture>
     {
-        private readonly IntegrationFixture integrationFixture;
+        private readonly IntegrationFixture testFixture;
 
-        public StoreRepositoryShould(IntegrationFixture integrationFixture)
+        public StoreRepositoryShould(IntegrationFixture testFixture)
         {
-            this.integrationFixture = integrationFixture;
+            this.testFixture = testFixture;
         }
 
         [MockableAutoData]
         [Theory]
-        public async Task CreateStore_FromStoreName(string storeName, [Frozen] Mock<IMapper> mapper)
+        public async Task CreateStore_FromStoreName(string storeName)
         {
-            //https://dzone.com/articles/write-integration-tests-on-mongodb-with-net-core-a
-            //https://github.com/Mongo2Go/Mongo2Go
             //arrange
-            var id = Guid.Empty;
-            mapper.Setup(m => m.Map<Store>(It.Is<StoreDb>(s => s.Name == storeName))).Callback<object>(c => id = ((StoreDb)c).Id);
-            var sut = new StoreRepository(integrationFixture.Context, mapper.Object);
+            var sut = new StoreRepository(testFixture.Context, testFixture.Mapper);
 
             //act
-            _ = await sut.Add(storeName, CancellationToken.None);
+            var store = await sut.Add(storeName, CancellationToken.None);
 
             //assert
-            var cursor = await integrationFixture.Context.Stores.FindAsync(Builders<StoreDb>.Filter.Eq(x => x.Id, id), cancellationToken: CancellationToken.None);
-            var data = await cursor.FirstOrDefaultAsync();
-            Assert.Equal(data.Name, storeName);
+            var cursor = await testFixture.Context.Stores.FindAsync(Builders<StoreDb>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
+            var dbStore = await cursor.FirstOrDefaultAsync();
+            Assert.NotNull(dbStore);
+            Assert.Equal(storeName, store.Name);
+            Assert.Equal(storeName, dbStore.Name);
+            Assert.Equal(0d, dbStore.AverageRating);
+            Assert.Empty(dbStore.Reviews);
+        }
+
+        [MockableAutoData]
+        [Theory]
+        public async Task GetStore_FromId(IEnumerable<StoreDb> documents)
+        {
+            //arrange
+            var document = documents.FirstOrDefault();
+            await testFixture.Context.Stores.InsertManyAsync(documents, cancellationToken: CancellationToken.None);
+            var sut = new StoreRepository(testFixture.Context, testFixture.Mapper);
+
+            //act
+            var store = await sut.GetById(document.Id, CancellationToken.None);
+
+            //assert
+            Assert.Equal(document.Id, store.Id);
+            Assert.Equal(document.Name, store.Name);
+            Assert.Equal(document.AverageRating, store.AverageRating);
+            Assert.Equal(document.Reviews.Count(), store.Reviews.Count());
         }
     }
 }
