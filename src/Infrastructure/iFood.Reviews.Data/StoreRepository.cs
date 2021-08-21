@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,40 +8,36 @@ namespace iFood.Reviews.Data
     public class StoreRepository : IStoreRepository
     {
         private readonly StoreContext context;
-        private readonly IMapper mapper;
 
-        public StoreRepository(StoreContext context, IMapper mapper)
+        public StoreRepository(StoreContext context)
         {
             if (context is null) throw new ArgumentNullException(nameof(context));
-            if (mapper is null) throw new ArgumentNullException(nameof(mapper));
 
             this.context = context;
-            this.mapper = mapper;
         }
 
         public async Task<Store> Add(string storeName, CancellationToken cancellation)
         {
-            var db = new StoreDb { Name = storeName };
-            await context.Stores.InsertOneAsync(db, cancellationToken: cancellation);
+            var store = new Store { Name = storeName };
+            await context.Stores.InsertOneAsync(store, cancellationToken: cancellation);
 
-            return mapper.Map<Store>(db);
+            return store;
         }
 
         public async Task<Store> GetById(Guid id, CancellationToken cancellation)
         {
-            var filter = Builders<StoreDb>.Filter.Eq(x => x.Id, id);
+            var filter = Builders<Store>.Filter.Eq(x => x.Id, id);
             var cursor = await context.Stores.FindAsync(filter, cancellationToken: cancellation);
-            var db = await cursor.FirstOrDefaultAsync(cancellation);
-            var store = mapper.Map<Store>(db);
+            var store = await cursor.FirstOrDefaultAsync(cancellation);
             return store;
         }
 
         public async Task SaveReviews(Store store, CancellationToken cancellation)
         {
-            var filter = Builders<StoreDb>.Filter.Eq(x => x.Id, store.Id);
-            var update = Builders<StoreDb>.Update
+            var filter = Builders<Store>.Filter.Eq(x => x.Id, store.Id);
+            var update = Builders<Store>.Update
                 .Set(x => x.AverageRating, store.AverageRating)
-                .Set(x => x.Reviews, mapper.Map<IEnumerable<ReviewDb>>(store.Reviews));
+                .Set(x => x.Reviews, store.Reviews);
 
             await context.Stores.FindOneAndUpdateAsync(filter, update, cancellationToken: cancellation);
         }

@@ -1,5 +1,8 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Driver;
 using System;
+using System.Linq;
 
 namespace iFood.Reviews.Data
 {
@@ -7,6 +10,26 @@ namespace iFood.Reviews.Data
     {
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
+
+        static StoreContext()
+        {
+            BsonSerializer.RegisterSerializer(new RatingBsonSerializer());
+            BsonClassMap.RegisterClassMap<Store>(c =>
+            {
+                c.AutoMap();
+                c.MapIdProperty(m => m.Id);
+                c.MapField("reviews").SetElementName(nameof(Store.Reviews));
+            });
+
+            BsonClassMap.RegisterClassMap<Review>(c =>
+            {
+                c.AutoMap();
+                c.MapIdProperty(m => m.Id);
+            });
+
+            ConventionRegistry.Register(nameof(ImmutableTypeClassMapConvention),
+                new ConventionPack { new ImmutableTypeClassMapConvention() }, type => new Type[] { typeof(Review) }.Contains(type));
+        }
 
         public StoreContext(string connectionString, string databaseName)
         {
@@ -20,7 +43,7 @@ namespace iFood.Reviews.Data
         public StoreContext(StoreSettings settings)
             : this(settings.ConnectionString, settings.Database) { }
 
-        public IMongoCollection<StoreDb> Stores => database.GetCollection<StoreDb>(StoreDb.CollectionName);
+        public IMongoCollection<Store> Stores => database.GetCollection<Store>(nameof(Store));
     }
 
     public class StoreSettings

@@ -16,18 +16,18 @@ namespace iFood.Reviews.Data.Tests
             this.testFixture = testFixture;
         }
 
-        [MockableAutoData]
+        [ReviewsAutoData]
         [Theory]
         public async Task CreateStore_FromStoreName(string storeName)
         {
             //arrange
-            var sut = new StoreRepository(testFixture.Context, testFixture.Mapper);
+            var sut = new StoreRepository(testFixture.Context);
 
             //act
             var store = await sut.Add(storeName, CancellationToken.None);
 
             //assert
-            var cursor = await testFixture.Context.Stores.FindAsync(Builders<StoreDb>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
+            var cursor = await testFixture.Context.Stores.FindAsync(Builders<Store>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
             var dbStore = await cursor.FirstOrDefaultAsync();
             Assert.NotNull(dbStore);
             Assert.Equal(storeName, store.Name);
@@ -36,14 +36,14 @@ namespace iFood.Reviews.Data.Tests
             Assert.Empty(dbStore.Reviews);
         }
 
-        [MockableAutoData]
+        [ReviewsAutoData]
         [Theory]
-        public async Task GetStore_FromId(IEnumerable<StoreDb> documents)
+        public async Task GetStore_FromId(IEnumerable<Store> documents)
         {
             //arrange
             var document = documents.FirstOrDefault();
             await testFixture.Context.Stores.InsertManyAsync(documents, cancellationToken: CancellationToken.None);
-            var sut = new StoreRepository(testFixture.Context, testFixture.Mapper);
+            var sut = new StoreRepository(testFixture.Context);
 
             //act
             var store = await sut.GetById(document.Id, CancellationToken.None);

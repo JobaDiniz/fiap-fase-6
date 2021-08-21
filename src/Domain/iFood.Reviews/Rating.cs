@@ -18,5 +18,14 @@ namespace iFood.Reviews
 
         public static implicit operator double(Rating rating) => rating.value;
         public static implicit operator Rating(double value) => new(value);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            return ((Rating)obj).value == value;
+        }
+
+        public override int GetHashCode() => value.GetHashCode();
+        public override string ToString() => value.ToString();
     }
 }

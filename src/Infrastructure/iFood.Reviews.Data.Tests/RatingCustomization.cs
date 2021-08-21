@@ -14,8 +14,11 @@ namespace iFood
             public object Create(object request, ISpecimenContext context)
             {
                 var property = request as PropertyInfo;
-                if (property == null ||
-                    property.PropertyType != typeof(Rating))
+                var parameter = request as ParameterInfo;
+                var type = property?.PropertyType ?? parameter?.ParameterType;
+
+                if (type == null ||
+                    type != typeof(Rating))
                     return new NoSpecimen();
 
                 var value = context.Resolve(new RangedNumberRequest(typeof(double), Rating.Minimum, Rating.Maximum));
