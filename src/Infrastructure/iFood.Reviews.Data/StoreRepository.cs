@@ -21,7 +21,7 @@ namespace iFood.Reviews.Data
             this.mapper = mapper;
         }
 
-        async Task<Store> IStoreRepository.Add(string storeName, CancellationToken cancellation)
+        public async Task<Store> Add(string storeName, CancellationToken cancellation)
         {
             var db = new StoreDb { Name = storeName };
             await context.Stores.InsertOneAsync(db, cancellationToken: cancellation);
@@ -29,7 +29,7 @@ namespace iFood.Reviews.Data
             return mapper.Map<Store>(db);
         }
 
-        async Task<Store> IStoreRepository.GetById(Guid id, CancellationToken cancellation)
+        public async Task<Store> GetById(Guid id, CancellationToken cancellation)
         {
             var filter = Builders<StoreDb>.Filter.Eq(x => x.Id, id);
             var cursor = await context.Stores.FindAsync(filter, cancellationToken: cancellation);
@@ -38,7 +38,7 @@ namespace iFood.Reviews.Data
             return store;
         }
 
-        async Task IStoreRepository.SaveReviews(Store store, CancellationToken cancellation)
+        public async Task SaveReviews(Store store, CancellationToken cancellation)
         {
             var filter = Builders<StoreDb>.Filter.Eq(x => x.Id, store.Id);
             var update = Builders<StoreDb>.Update
