@@ -3,7 +3,7 @@ using AutoFixture.Kernel;
 using iFood.Reviews;
 using System.Reflection;
 
-namespace iFood
+namespace iFood.Tests
 {
     public class RatingCustomization : ICustomization
     {
