@@ -12,7 +12,7 @@ namespace iFood.Reviews.Tests
         [ReviewsAutoData]
         [Theory]
         public void Throw_WhenReviewIsNull(Store sut) =>
-            Assert.Throws<ArgumentNullException>(() => sut.AddReview(null));
+            Assert.Throws<ArgumentNullException>(() => sut.AddReviews(null));
 
         [ReviewsAutoData]
         [Theory]
@@ -24,7 +24,7 @@ namespace iFood.Reviews.Tests
             var sut = new Store(fixture.Create<string>(), reviews);
 
             //act
-            sut.AddReview(review);
+            sut.AddReviews(review);
 
             //assert
             Assert.Equal(expectedAverage, sut.AverageRating);
