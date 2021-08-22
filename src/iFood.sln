@@ -25,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FBB71375-E1CC-45EA-B008-9766869F5B4E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{86F2BF36-BB70-4A23-A513-6C1C36EF23A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iFood.Reviews.Service", "Application\iFood.Reviews.Service\iFood.Reviews.Service.csproj", "{3756AB9A-6912-4050-A0A1-16BDCBFCC57B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Framework\iFood.Tests\iFood.Tests.projitems*{368fffb2-61da-4b2f-acb0-a02249ff188d}*SharedItemsImports = 5
@@ -60,6 +64,10 @@ Global
 		{FBB71375-E1CC-45EA-B008-9766869F5B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBB71375-E1CC-45EA-B008-9766869F5B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBB71375-E1CC-45EA-B008-9766869F5B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3756AB9A-6912-4050-A0A1-16BDCBFCC57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3756AB9A-6912-4050-A0A1-16BDCBFCC57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3756AB9A-6912-4050-A0A1-16BDCBFCC57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3756AB9A-6912-4050-A0A1-16BDCBFCC57B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +79,7 @@ Global
 		{641DD2E0-A938-47CE-BA28-CBAD05D0FAD8} = {BA35DA99-E156-4A1D-B0C2-1F275D15833E}
 		{368FFFB2-61DA-4B2F-ACB0-A02249FF188D} = {D54061C6-F22E-4E27-9930-743AC8C80FE5}
 		{94EECEDD-1B31-4DD8-BA02-38ABC9F2F42A} = {5D43749B-736A-465E-B31C-8F1D58C0CEB2}
+		{3756AB9A-6912-4050-A0A1-16BDCBFCC57B} = {86F2BF36-BB70-4A23-A513-6C1C36EF23A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71BCBFEF-896E-4B5E-8EDD-00B42D7CA4D3}

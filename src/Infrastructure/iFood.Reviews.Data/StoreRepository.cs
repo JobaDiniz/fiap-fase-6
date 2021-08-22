@@ -18,9 +18,9 @@ namespace iFood.Reviews.Data
             this.context = context;
         }
 
-        public async Task<Store> Add(string storeName, CancellationToken cancellation)
+        public async Task<Store> Add(Guid storeId, string storeName, CancellationToken cancellation)
         {
-            var store = new Store { Name = storeName };
+            var store = new Store { Id = storeId, Name = storeName };
             await context.Stores.InsertOneAsync(store, cancellationToken: cancellation);
 
             return store;

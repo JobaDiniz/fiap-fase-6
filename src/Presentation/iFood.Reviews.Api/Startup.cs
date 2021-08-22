@@ -1,4 +1,5 @@
 using iFood.Reviews.Data;
+using iFood.Reviews.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,12 @@ namespace iFood.Reviews.Api
 
             services.AddScoped(s => new StoreContext(Configuration.GetConnectionString("storeContext")));
             services.AddTransient<IStoreRepository, StoreRepository>();
+
+            //Kafka
+            var settings = new KafkaSettings();
+            Configuration.Bind("Kafka", settings);
+            services.AddSingleton(settings);
+            services.AddHostedService<KafkaConsumer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
