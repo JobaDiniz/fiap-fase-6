@@ -4,9 +4,8 @@
 Phase 6 of Fiap MBA course. TODO:
 
 ## Architecture
->TODO SUMMARY
+<img width="836" alt="image" src="https://user-images.githubusercontent.com/82127869/130356982-cf385151-0eb6-4733-b75d-3608e47a261a.png">
 
->TODO DIAGRAM
 
 ## Contributing
 If you want to contribute, start by reading [CONTRIBUTING.md](CONTRIBUTING.md).
