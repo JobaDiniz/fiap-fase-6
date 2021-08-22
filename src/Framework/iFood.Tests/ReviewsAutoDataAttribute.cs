@@ -4,7 +4,7 @@ using AutoFixture.Kernel;
 using AutoFixture.Xunit2;
 using iFood.Reviews;
 
-namespace iFood
+namespace iFood.Tests
 {
     public class ReviewsAutoDataAttribute : AutoDataAttribute
     {

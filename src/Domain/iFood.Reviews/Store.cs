@@ -6,7 +6,7 @@ namespace iFood.Reviews
 {
     public class Store
     {
-        private /*readonly*/ IList<Review> reviews = new List<Review>();
+        private IList<Review> reviews = new List<Review>();
 
         public Store() { }
 
@@ -14,6 +14,7 @@ namespace iFood.Reviews
         {
             this.reviews = reviews.ToList();
             Name = name;
+            AverageRating = CalculateAverageRating();
         }
 
         public Guid Id { get; private set; } = Guid.NewGuid();
@@ -26,32 +27,9 @@ namespace iFood.Reviews
             if (review is null) throw new ArgumentNullException(nameof(review));
 
             reviews.Add(review);
-            AverageRating = reviews.Sum(r => r.Rating) / reviews.Count;
-        }
-    }
-
-    public class Review
-    {
-        public Review(Guid id, string userName, Rating rating, DateTime date, string description, string response)
-        {
-            if (string.IsNullOrEmpty(userName)) throw new ArgumentNullException(nameof(userName));
-
-            Id = id;
-            UserName = userName;
-            Rating = rating;
-            Date = date;
-            Description = description;
-            Response = response;
+            AverageRating = CalculateAverageRating();
         }
 
-        public Review(string userName, Rating rating, DateTime date, string description = null)
-            : this(Guid.NewGuid(), userName, rating, date, description, null) { }
-
-        public Guid Id { get; }
-        public string UserName { get; }
-        public Rating Rating { get; }
-        public DateTime Date { get; }
-        public string Description { get; }
-        public string Response { get; }
+        private double CalculateAverageRating() => reviews.Average(r => r.Rating);
     }
 }
