@@ -25,5 +25,28 @@ namespace iFood.Reviews
         public DateTime Date { get; }
         public string Description { get; }
         public string Response { get; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (obj is not Review store) return false;
+
+            return store.Id == Id;
+        }
+
+        public override int GetHashCode() => Id.GetHashCode();
+
+        public static bool operator ==(Review left, Review right)
+        {
+            if (left is null && right is null)
+                return true;
+
+            if (left is null || right is null)
+                return false;
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Review left, Review right) => !(left == right);
     }
 }

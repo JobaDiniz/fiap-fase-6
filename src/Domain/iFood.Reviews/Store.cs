@@ -22,14 +22,39 @@ namespace iFood.Reviews
         public double AverageRating { get; private set; }
         public IEnumerable<Review> Reviews => reviews;
 
-        public void AddReview(Review review)
+        public void AddReviews(params Review[] reviews)
         {
-            if (review is null) throw new ArgumentNullException(nameof(review));
+            if (reviews is null) throw new ArgumentNullException(nameof(reviews));
 
-            reviews.Add(review);
+            foreach (var review in reviews)
+                this.reviews.Add(review);
+
             AverageRating = CalculateAverageRating();
         }
 
         private double CalculateAverageRating() => reviews.Average(r => r.Rating);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (obj is not Store store) return false;
+
+            return store.Id == Id;
+        }
+
+        public override int GetHashCode() => Id.GetHashCode();
+
+        public static bool operator ==(Store left, Store right)
+        {
+            if (left is null && right is null)
+                return true;
+
+            if (left is null || right is null)
+                return false;
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Store left, Store right) => !(left == right);
     }
 }

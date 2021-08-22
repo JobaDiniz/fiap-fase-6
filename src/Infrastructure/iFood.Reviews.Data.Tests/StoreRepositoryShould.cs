@@ -29,12 +29,13 @@ namespace iFood.Reviews.Data.Tests
 
             //assert
             var cursor = await testFixture.Context.Stores.FindAsync(Builders<Store>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
-            var dbStore = await cursor.FirstOrDefaultAsync();
-            Assert.NotNull(dbStore);
+            var document = await cursor.FirstOrDefaultAsync();
+
+            Assert.NotNull(document);
             Assert.Equal(storeName, store.Name);
-            Assert.Equal(storeName, dbStore.Name);
-            Assert.Equal(0d, dbStore.AverageRating);
-            Assert.Empty(dbStore.Reviews);
+            Assert.Equal(storeName, document.Name);
+            Assert.Equal(0d, document.AverageRating);
+            Assert.Empty(document.Reviews);
         }
 
         [ReviewsAutoData]
@@ -50,6 +51,29 @@ namespace iFood.Reviews.Data.Tests
             var store = await sut.GetById(document.Id, CancellationToken.None);
 
             //assert
+            Assert.Equal(document.Id, store.Id);
+            Assert.Equal(document.Name, store.Name);
+            Assert.Equal(document.AverageRating, store.AverageRating);
+            Assert.Equal(document.Reviews.Count(), store.Reviews.Count());
+        }
+
+        [ReviewsAutoData]
+        [Theory]
+        public async Task SaveReviews(string storeName, IEnumerable<Review> reviews)
+        {
+            //arrange
+            var sut = new StoreRepository(testFixture.Context);
+            var store = await sut.Add(storeName, CancellationToken.None);
+            store.AddReviews(reviews.ToArray());
+
+            //act
+            _ = await sut.SaveReviews(store, CancellationToken.None);
+
+            //assert
+            var cursor = await testFixture.Context.Stores
+                .FindAsync(Builders<Store>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
+            var document = await cursor.FirstOrDefaultAsync();
+
             Assert.Equal(document.Id, store.Id);
             Assert.Equal(document.Name, store.Name);
             Assert.Equal(document.AverageRating, store.AverageRating);

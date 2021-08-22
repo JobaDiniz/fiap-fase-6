@@ -1,5 +1,7 @@
 ﻿using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,14 +34,15 @@ namespace iFood.Reviews.Data
             return store;
         }
 
-        public async Task SaveReviews(Store store, CancellationToken cancellation)
+        public async Task<Store> SaveReviews(Store store, CancellationToken cancellation)
         {
+            var reviews = store.Reviews.ToList();
             var filter = Builders<Store>.Filter.Eq(x => x.Id, store.Id);
             var update = Builders<Store>.Update
                 .Set(x => x.AverageRating, store.AverageRating)
-                .Set(x => x.Reviews, store.Reviews);
+                .Set(new StringFieldDefinition<Store, IList<Review>>(StoreContextMongoConfiguration.StoreReviewsFieldName), reviews);
 
-            await context.Stores.FindOneAndUpdateAsync(filter, update, cancellationToken: cancellation);
+            return await context.Stores.FindOneAndUpdateAsync(filter, update, cancellationToken: cancellation);
         }
     }
 }
