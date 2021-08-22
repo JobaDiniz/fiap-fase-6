@@ -1,5 +1,6 @@
 using iFood.Tests;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -19,19 +20,20 @@ namespace iFood.Reviews.Data.Tests
 
         [ReviewsAutoData]
         [Theory]
-        public async Task CreateStore_FromStoreName(string storeName)
+        public async Task CreateStore_FromStoreName(Guid storeId, string storeName)
         {
             //arrange
             var sut = new StoreRepository(testFixture.Context);
 
             //act
-            var store = await sut.Add(storeName, CancellationToken.None);
+            var store = await sut.Add(storeId, storeName, CancellationToken.None);
 
             //assert
-            var cursor = await testFixture.Context.Stores.FindAsync(Builders<Store>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
+            var cursor = await testFixture.Context.Stores.FindAsync(Builders<Store>.Filter.Eq(x => x.Id, storeId), cancellationToken: CancellationToken.None);
             var document = await cursor.FirstOrDefaultAsync();
 
             Assert.NotNull(document);
+            Assert.Equal(storeId, store.Id);
             Assert.Equal(storeName, store.Name);
             Assert.Equal(storeName, document.Name);
             Assert.Equal(0d, document.AverageRating);
@@ -59,11 +61,11 @@ namespace iFood.Reviews.Data.Tests
 
         [ReviewsAutoData]
         [Theory]
-        public async Task SaveReviews(string storeName, IEnumerable<Review> reviews)
+        public async Task SaveReviews(Guid storeId, string storeName, IEnumerable<Review> reviews)
         {
             //arrange
             var sut = new StoreRepository(testFixture.Context);
-            var store = await sut.Add(storeName, CancellationToken.None);
+            var store = await sut.Add(storeId, storeName, CancellationToken.None);
             store.AddReviews(reviews.ToArray());
 
             //act
@@ -71,7 +73,7 @@ namespace iFood.Reviews.Data.Tests
 
             //assert
             var cursor = await testFixture.Context.Stores
-                .FindAsync(Builders<Store>.Filter.Eq(x => x.Id, store.Id), cancellationToken: CancellationToken.None);
+                .FindAsync(Builders<Store>.Filter.Eq(x => x.Id, storeId), cancellationToken: CancellationToken.None);
             var document = await cursor.FirstOrDefaultAsync();
 
             Assert.Equal(document.Id, store.Id);

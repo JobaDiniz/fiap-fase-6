@@ -17,7 +17,7 @@ namespace iFood.Reviews
             AverageRating = CalculateAverageRating();
         }
 
-        public Guid Id { get; private set; } = Guid.NewGuid();
+        public Guid Id { get; init; } = Guid.NewGuid();
         public string Name { get; init; }
         public double AverageRating { get; private set; }
         public IEnumerable<Review> Reviews => reviews;
