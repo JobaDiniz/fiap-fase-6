@@ -10,6 +10,9 @@ namespace iFood.Reviews.Data
 
         static StoreContext() => StoreContextMongoConfiguration.Configure();
 
+        public StoreContext(string connectionString)
+            : this(connectionString, MongoUrl.Create(connectionString).DatabaseName) { }
+
         public StoreContext(string connectionString, string databaseName)
         {
             if (connectionString is null) throw new ArgumentNullException(nameof(connectionString));
