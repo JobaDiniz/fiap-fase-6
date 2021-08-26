@@ -65,7 +65,7 @@ In the `iFood.Reviews.Data.Tests` integration test project, there is a file `doc
 - Run `docker-compose -f src/infrastructure/ifood.Reviews.Data.Tests/docker-compose.yml up`
 - Run the `iFood.Reviews.Data.Tests` tests wthin Visual Studio
 
-Those tests also run automatically using *github actions* no every *pull request*. This was configured using the [CI workflow](./.github/workflows/ci.yml)
+Those tests also run automatically using *github actions* in every *pull request*. This was configured using the [CI workflow](./.github/workflows/ci.yml).
 
 ## Links
 - [Apache Kafka CLI commands cheat sheet](https://medium.com/@TimvanBaarsen/apache-kafka-cli-commands-cheat-sheet-a6f06eac01b#a1a2)
